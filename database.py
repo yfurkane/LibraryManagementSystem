@@ -52,7 +52,7 @@ class DatabaseHandler(object):
             return False
         pass
 
-    def CheckAuth(self,userName,password):
+    def     CheckAuth(self,userName,password):
         response = self.m_Database.FetchOne(f"SELECT * from Members where UserName == \"{userName}\" and Password == \"{password}\";")
         #print(response)
         if response is not None:
