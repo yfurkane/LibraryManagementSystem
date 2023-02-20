@@ -1,14 +1,14 @@
 from enum import Enum
 import uuid
-from user import *
+from User import *
 
 
 class MainHandler:
     #Constructor
     def __init__(self):
-        self.m_DatabaseHandler = DatabaseHandler()
+        self.m_DatabaseHandler = DatabaseHandler() #Singeleton Class
         self.m_DatabaseHandler.Init(db_file = "libraryDb (2).sqlite")
-        pass
+
     #Connect Database
     # Member Function
     def Start(self):
@@ -21,7 +21,7 @@ class MainHandler:
                 self.m_LoggedInUser.Dialog()              
                 break
             elif selection == "2":
-                self.SignUp()
+                self.SignUp() # TO DO
                 break
             elif selection == ":q":
                 print("Quit")
@@ -45,6 +45,7 @@ class MainHandler:
                 print("Invalid username! Does not find any record")
                 idCounter +=1
                 continue
+
             while True:
                 if (pwCounter > 3):
                     print("Too many wrong password try!")
@@ -58,6 +59,7 @@ class MainHandler:
                     continue
                 else:
                     break
+                
             self.m_LoggedInUser = UserFactory.CreateUser(userData)
             break
     
@@ -71,28 +73,10 @@ class MainHandler:
 
 
 def main():
-    '''
-    Book1 = Book({"T3", "2A", 3}, "KitapGüzel" , "EKMEKCI")
-    Book2 = Book({"T3", "2A", 3}, "KitapGüzel" , "EKMEKCI")
-    print(Book1.m_Title)
-    print(Book1.m_PhysicalAddress)
-    print(Book1.m_UniqueId)
-    print(Book2.m_UniqueId)
-    User1=UserFactory.CreateUser("Kerim", 123, "Reader")
-    print(User1.m_FullName)
-    '''
+
     mainHandler = MainHandler()
     mainHandler.Start()
 
 
 if __name__ == "__main__":
     main()
-
-'''
-    Welcome the application ....
-    Enter UserName
-    Enter PW
-
-    MainHandler.Dialog()
-
-'''

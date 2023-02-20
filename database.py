@@ -54,7 +54,7 @@ class DatabaseHandler(object):
 
     def CheckAuth(self,userName,password):
         response = self.m_Database.FetchOne(f"SELECT * from Members where UserName == \"{userName}\" and Password == \"{password}\";")
-        print(response)
+        #print(response)
         if response is not None:
             result = {
                 "userName" : response[1]+ " " + response[2],
@@ -136,7 +136,7 @@ class DatabaseHandler(object):
 
     def SearchBook(self,criteria, keyword):
         response =self.m_Database.FetchOne(f"SELECT * from Books where \"{criteria}\" == \"{keyword}\";")
-        print(response)
+        #print(response)
         if response is not None:
             result = {
                 "result" : True,
