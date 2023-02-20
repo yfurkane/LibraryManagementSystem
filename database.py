@@ -1,6 +1,6 @@
 import sqlite3 as sql
-import libraryDb.sqlite
-db_file = libraryDb.sqlite
+
+db_file = "libraryDb.sqlite"
 
 class Database:
     def __init__(self, db_file):
@@ -24,3 +24,59 @@ class Database:
         else:
             self.cursor.execute(sql, params)
         return self.cursor.fetchall()
+
+class reader:
+    def create_table(self):
+        sql = """ CREATE TABLE IF NOT EXISTS Members(
+                    MemberID Integer Primary Key AUTOINCREMENT,
+                    FirstName Text,
+                    LastName Text,
+                    Type Text,
+                    Mail Text,
+                    Password Text,
+                    TookedBooks Integer)"""
+    
+    def categories(self):
+        sql = """ CREATE TABLE IF NOT EXISTS Categories(
+                    CategoryID Integer Primary KEy AUTOINCREMENT,
+                    Name Text )"""
+    def books(self):
+        sql =  """ CREATE TABLE IF NOT EXISTS Books(
+                    BookID Integer Primary Key AUTOINCREMENT,
+                    Name Text,
+                    Author Text,
+                    ISBN Integer,
+                    Address Text,
+                    PublicationDate Text,
+                    Status Text,
+                    Category_ID Integer,
+                    Foreign Key(Category_ID) References Categories(CategoryID))
+                    """
+    def occupied_books(self):
+        sql= """ CREATE TABLE IF NOT EXISTS TookBooks(
+                    TookBookID Integer Primary Key AUTOINCREMENT,
+                    MemberID Integer ,
+                    BookID Integer,
+                    TookDate Text,
+                    Foreign Key(MemberID) references Members(MemberID),
+                    Foreign Key(BookID) references Books(BookID))"""
+        
+    
+    def reserved_books(self):
+        sql = """ CREATE TABLE IF NOT EXISTS ReceivedBooks(
+                    ReceivedBookID Integer Primary Key AUTOINCREMENT,
+                    MemberID Integer,
+                    BookID Integer ,
+                    ReceivedDate Text,
+                    Foreign Key(MemberID) references Members(MemberID),
+                    Foreign Key(BookID) references Books(BookID))"""
+    
+    def free_books(self):
+        sql = """ CREATE TABLE IF NOT EXISTS ReturnedBooks(
+                    ReturnedBookID Integer Primary Key AUTOINCREMENT,
+                    MemberID Integer,
+                    BookID Integer,
+                    ReturnedDate Text,
+                    Foreign Key(MemberID) references Members(MemberID),
+                    Foreign Key(BookID) references Books(BookID))"""
+                
