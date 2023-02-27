@@ -1,6 +1,5 @@
 import sqlite3 as sql
-from BookState import BookState
-#import libraryDb.sqlite
+from bookState import BookState
 
 
 class Database:
@@ -9,24 +8,24 @@ class Database:
         self.connection = sql.connect(db_file)
         self.cursor = self.connection.cursor()
 
-    def Close(self):
+    def close(self):
         self.connection.close()
 
-    def Execute(self, sql, params=None):
+    def execute(self, sql, params=None):
         if params is None:
             self.cursor.execute(sql)
         else:
             self.cursor.execute(sql, params)
         self.connection.commit()
 
-    def FetchAll(self, sql, params=None):
+    def fetchAll(self, sql, params=None):
         if params is None:
             self.cursor.execute(sql)
         else:
             self.cursor.execute(sql, params)
         return self.cursor.fetchall()
     
-    def FetchOne(self, sql, params=None):
+    def fetchOne(self, sql, params=None):
         if params is None:
             self.cursor.execute(sql)
         else:
@@ -40,20 +39,20 @@ class DatabaseHandler(object):
 
         return cls.instance
     
-    def Init(self,db_file):
+    def init(self,db_file):
         self.m_Database = Database(db_file)
         
-    def CheckUserName(self,userName):
+    def check_user_name(self,userName):
         #Check if userName exist in database
-        response = self.m_Database.FetchOne(f"SELECT count(1) from Members where UserName == \"{userName}\";")
+        response = self.m_Database.fetchOne(f"SELECT count(1) from Members where UserName == \"{userName}\";")
         if(response[0] == 1):
             return True
         else:
             return False
         pass
 
-    def     CheckAuth(self,userName,password):
-        response = self.m_Database.FetchOne(f"SELECT * from Members where UserName == \"{userName}\" and Password == \"{password}\";")
+    def     check_auth(self,userName,password):
+        response = self.m_Database.fetchOne(f"SELECT * from Members where UserName == \"{userName}\" and Password == \"{password}\";")
         #print(response)
         if response is not None:
             result = {
@@ -67,8 +66,8 @@ class DatabaseHandler(object):
         else:
             return None
 
-    def CheckUserId(self, userId):
-        response = self.m_Database.FetchOne(f"SELECT * from Members where MemberID == \"{userId}\";")
+    def check_user_Id(self, userId):
+        response = self.m_Database.fetchOne(f"SELECT * from Members where MemberID == \"{userId}\";")
         if response is not None:
             result = {
                 "result" : True,
@@ -88,8 +87,8 @@ class DatabaseHandler(object):
             }
             return result
 
-    def CheckBook(self,bookId):
-        response =self.m_Database.FetchOne(f"SELECT * from Books where BookID == \"{bookId}\";")
+    def check_book(self,bookId):
+        response =self.m_Database.fetchOne(f"SELECT * from Books where BookID == \"{bookId}\";")
         print(response)
         if response is not None:
             result = {
@@ -116,7 +115,7 @@ class DatabaseHandler(object):
             }
             return result
 
-    def UpdateBook(self,book):
+    def update_book(self,book):
         state = "Free"
         print(book.m_UniqueId)
         if(book.m_State == BookState.OCCUPIED):
@@ -125,17 +124,17 @@ class DatabaseHandler(object):
             state = "Reserved"
         
         if book.m_OccupiedOrReservedBy is None:
-            self.m_Database.Execute(f"UPDATE Books Set Status = \"{state}\" , occupiedOrReservedBy = \"{None}\"  where BookID = \"{book.m_UniqueId}\";")
+            self.m_Database.execute(f"UPDATE Books Set Status = \"{state}\" , occupiedOrReservedBy = \"{None}\"  where BookID = \"{book.m_UniqueId}\";")
         else:
-            self.m_Database.Execute(f"UPDATE Books Set Status = \"{state}\" , occupiedOrReservedBy = \"{book.m_OccupiedOrReservedBy.m_UserId}\"  where BookID = \"{book.m_UniqueId}\";")
+            self.m_Database.execute(f"UPDATE Books Set Status = \"{state}\" , occupiedOrReservedBy = \"{book.m_OccupiedOrReservedBy.m_UserId}\"  where BookID = \"{book.m_UniqueId}\";")
         pass
     
-    def UpdateReader(self, reader):
-        self.m_Database.Execute(f"UPDATE Members Set TookedBooks = \"{reader.m_NumberOfBooksOccupied}\" where MemberID = \"{reader.m_UserId}\";")
+    def update_reader(self, reader):
+        self.m_Database.execute(f"UPDATE Members Set TookedBooks = \"{reader.m_NumberOfBooksOccupied}\" where MemberID = \"{reader.m_UserId}\";")
         pass
 
-    def SearchBook(self,criteria, keyword):
-        response =self.m_Database.FetchOne(f"SELECT * from Books where \"{criteria}\" == \"{keyword}\";")
+    def search_book(self,criteria, keyword):
+        response =self.m_Database.fetchOne(f"SELECT * from Books where \"{criteria}\" == \"{keyword}\";")
         #print(response)
         if response is not None:
             result = {

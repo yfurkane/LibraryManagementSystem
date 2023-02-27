@@ -1,7 +1,9 @@
 from database import DatabaseHandler
-from BookState import BookState
+from bookState import BookState
+import uuid
+
 class Util:
-    def GenerateUniqueId():
+    def generateuniqueId():
         return uuid.uuid4()
 
 class Book:
@@ -19,7 +21,7 @@ class Book:
             self.m_UniqueId = Util.GenerateUniqueId()
 
     @classmethod
-    def FromBookData(cls, bookData):
+    def fromBookData(cls, bookData):
         state = BookState.FREE
 
         if(bookData["bookState"] == "Occupied"):
@@ -31,31 +33,31 @@ class Book:
                     bookData["publicationDate"],state,bookData["occupiedOrReservedBy"],bookData["UUID"])
 
     # Member Functions 
-    def MoveBook(self,newPhysicalAddress):
+    def moveBook(self,newPhysicalAddress):
         self.m_PhysicalAddress = newPhysicalAddress
     
-    def ChangeState(self,newState):
+    def changeState(self,newState):
         self.m_State = newState
 
     # Might user be reader
-    def ReserveBook(self,user):
-        self.ChangeState(BookState.RESERVED)
+    def reserveBook(self,user):
+        self.changeState(BookState.RESERVED)
         self.m_OccupiedOrReservedBy = user
-        self.UpdateDatabase()
+        self.updateDatabase()
 
-    def OccupyBook(self,user):
-        self.ChangeState(BookState.OCCUPIED)
+    def occupyBook(self,user):
+        self.changeState(BookState.OCCUPIED)
         self.m_OccupiedOrReservedBy = user
-        self.UpdateDatabase()
+        self.updateDatabase()
 
-    def FreeBook(self):
-        self.ChangeState(BookState.FREE)
+    def freeBook(self):
+        self.changeState(BookState.FREE)
         self.m_OccupiedOrReservedBy = None
-        self.UpdateDatabase()
+        self.updateDatabase()
     
-    def UpdateDatabase(self):
+    def updateDatabase(self):
         # Database Query
-        DatabaseHandler().UpdateBook(self)
+        DatabaseHandler().update_book(self)
         pass
 
 

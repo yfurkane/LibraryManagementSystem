@@ -7,7 +7,7 @@ class User:
         self.m_UserId = userId
         self.m_PhoneNumber = phoneNumber
     
-    def SearchBooks(self):
+    def searchBooks(self):
         while True:
             selection = input("Search By Their 1. Title 2. Author 3. Subject Category 4. Publication Date: ")
             if selection == "1":
@@ -41,7 +41,7 @@ class Reader(User):
         self.m_NumberOfBooksOccupied = numberOfBooksOccupied
         User.__init__(self, fullName, userId, phoneNumber)
 
-    def ReserveBook(self):
+    def reserveBook(self):
         if self.m_NumberOfBooksOccupied > 5:
             print("User cannot occupy or reserve more than 5 books!")
             return False
@@ -50,7 +50,7 @@ class Reader(User):
         response = (DatabaseHandler().CheckBook(bookUUID)) # If response is none there is no existing book with this id
 
         if(response["result"] is not False):
-            book = Book.FromBookData(response["data"])
+            book = Book.fromBookData(response["data"])
         else:
             return False
         
@@ -62,16 +62,16 @@ class Reader(User):
 
         self.m_ReservedBooks.append(book)
         self.m_NumberOfBooksOccupied += 1
-        self.UpdateDatabase()
+        self.updateDatabase()
         return True
 
-    def FreeBook(self):
+    def freeBook(self):
         
         bookUUID = input("Please enter Book id to free a book: ")
-        response = (DatabaseHandler().CheckBook(bookUUID)) # If response is none there is no existing book with this id
+        response = (DatabaseHandler().check_book(bookUUID)) # If response is none there is no existing book with this id
 
         if(response["result"] is not False):
-            book = Book.FromBookData(response["data"])
+            book = Book.fromBookData(response["data"])
         else:
             return False
         
@@ -83,20 +83,20 @@ class Reader(User):
 
         self.m_ReservedBooks.append(book)
         self.m_NumberOfBooksOccupied -= 1
-        self.UpdateDatabase()
+        self.updateDatabase()
 
         return True
 
-    def OccupyBook(self):
+    def occupyBook(self):
 
         if self.m_NumberOfBooksOccupied > 5:
             return False
         
         bookUUID = input("Please enter book id to occupy a book: ")
-        response = (DatabaseHandler().CheckBook(bookUUID)) # If response is none there is no existing book with this id
+        response = (DatabaseHandler().check_book(bookUUID)) # If response is none there is no existing book with this id
 
         if(response["result"] is not False):
-            book = Book.FromBookData(response["data"])
+            book = Book.fromBookData(response["data"])
         else:
             return False
         
@@ -104,42 +104,42 @@ class Reader(User):
             print("Book is already occupied by someone")
             return False
         
-        book.OccupyBook(self)
+        book.occupyBook(self)
 
         self.m_OccupiedBooks.append(book)
         self.m_NumberOfBooksOccupied += 1
-        self.UpdateDatabase()
+        self.updateDatabase()
         return True
 
-    def UpdateDatabase(self):
-        DatabaseHandler().UpdateReader(self)
+    def updateDatabase(self):
+        DatabaseHandler().update_reader(self)
         pass
     #Member Functions
-    def Dialog(self):
+    def dialog(self):
         print(f"{self.m_FullName} Logged as Reader")
         while True:
             selection = input("What do you want: 1. Reserve book for yourself 2. Free book for yourself 3. Occupy book for yourself 4. Search Books: ")
             if selection == "1":
-                if (self.ReserveBook()):
+                if (self.reserveBook()):
                     print("Operation success")
                 else:
                     print("Operation Failed")
                 pass
             elif selection == "2":
-                if (self.FreeBook()):
+                if (self.freeBook()):
                     print("Operation success")
                 else:
                     print("Operation Failed")
                 
             elif selection == "3":
-                if (self.OccupyBook()):
+                if (self.occupyBook()):
                     print("Operation success")
                 else:
                     print("Operation Failed")
                 
                 
             elif selection == "4":
-                self.SearchBooks()
+                self.searchBooks()
                 
             elif selection == ":q":
                 exit()
@@ -156,35 +156,35 @@ class Librarian(User):
     #ChangePhoneNumber
     #Movebook
     #Free, Occupy, Reserve Book for User
-    def OccupyBookForUser(self,user,book):
-        book.OccupyBook(user)
+    def occupyBookForUser(self,user,book):
+        book.occupyBook(user)
 
-    def Dialog(self):
+    def dialog(self):
         print(f"{self.m_FullName} Logged as Librarian")
         while True:
             selection = input("What do you want: 1. Reserve book for someone 2. Free book for someone 3. Occupy book for someone 4. Search Books: ")
             if selection == "1":
-                if (self.ReserveBook()):
+                if (self.reserveBook()):
                     print("Operation success")
                 else:
                     print("Operation Failed")
                 pass
             elif selection == "2":
-                if (self.FreeBook()):
+                if (self.freeBook()):
                     print("Operation success")
                 else:
                     print("Operation Failed")
                 pass
                 pass
             elif selection == "3":
-                if (self.OccupyBook()):
+                if (self.occupyBook()):
                     print("Operation success")
                 else:
                     print("Operation Failed")
                 pass
                 pass
             elif selection == "4":
-                self.SearchBooks()
+                self.searchBooks()
                 pass
             elif selection == ":q":
                 exit()
@@ -193,12 +193,12 @@ class Librarian(User):
         
     
         
-    def ReserveBook(self):
+    def reserveBook(self):
         userId = input("Please enter user id to reserve a book: ")
-        response = DatabaseHandler().CheckUserId(userId) # If response is none there is no existing user with this id 
+        response = DatabaseHandler().check_user_Id(userId) # If response is none there is no existing user with this id 
         if(response["result"] is not False):
             if (response["data"]["role"] == "Reader"):
-                user = UserFactory.CreateUser(response["data"])
+                user = UserFactory.createUserreateUser(response["data"])
             else:
                 print("Librarian user cannot reserve a book")
                 return
@@ -206,33 +206,33 @@ class Librarian(User):
             return False
 
         
-        return user.ReserveBook()
+        return user.reserveBook()
      
 
-    def FreeBook(self):
+    def freeBook(self):
         userId = input("Please enter user id to free a book: ")
-        response = DatabaseHandler().CheckUserId(userId) # If response is none there is no existing user with this id 
+        response = DatabaseHandler().check_user_Id(userId) # If response is none there is no existing user with this id 
         if(response["result"] is not False):
-            user = UserFactory.CreateUser(response["data"])
+            user = UserFactory.createUser(response["data"])
         else:
             return False
 
-        return user.FreeBook()
+        return user.freeBook()
 
-    def OccupyBook(self):
+    def occupyBook(self):
         userId = input("Please enter user id to occupy a book: ")
-        response = DatabaseHandler().CheckUserId(userId) # If response is none there is no existing user with this id 
+        response = DatabaseHandler().check_user_Id(userId) # If response is none there is no existing user with this id 
         if(response["result"] is not False):
-            user = UserFactory.CreateUser(response["data"])
+            user = UserFactory.createUser(response["data"])
         else:
             return False
 
 
-        return user.OccupyBook()
+        return user.occupyBook()
         
 
 class UserFactory:
-    def CreateUser(userData):
+    def createUser(userData):
         if(userData["role"] == "Reader"):
             reader = Reader(userData["userName"],userData["userId"],userData["phoneNumber"],userData["occupiedOrReservedBooks"])
             return reader
