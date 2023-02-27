@@ -37,7 +37,7 @@ class MainHandler:
         pwCounter = 0
         idCounter = 0
         while True:
-            if (idCounter > 3):
+            if (idCounter > 3):#3 kezden farklı yanlış girilirse dışarı atıyor.
                 print("Too many wrong username try!")
                 MainHandler.Shutdown()
             username = input("Username: ")
